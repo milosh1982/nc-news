@@ -38,10 +38,12 @@ describe("GET /api", () => {
       .get("/api")
       .expect(200)
       .then(({ body }) => {
-        const { allApi } = body;
-        const arrOfKeys = Object.keys(allApi);
-        arrOfKeys.forEach((key) => {
-          expect(typeof key).toBe("string");
+        const { getApi } = body;
+        const arrGetApi = Object.values(getApi);
+        arrGetApi.forEach((api) => {
+          expect(api).toHaveProperty("description");
+          expect(api).toHaveProperty("queries");
+          expect(api).toHaveProperty("exampleResponse");
         });
       });
   });
