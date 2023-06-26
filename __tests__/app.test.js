@@ -32,3 +32,17 @@ describe("GET api/nonsense ", () => {
       });
   });
 });
+describe("GET /api", () => {
+  test("should respond with an object describing all the available endpoints ", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const { allApi } = body;
+        const arrOfKeys = Object.keys(allApi);
+        arrOfKeys.forEach((key) => {
+          expect(typeof key).toBe("string");
+        });
+      });
+  });
+});
