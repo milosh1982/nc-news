@@ -1,3 +1,6 @@
 # Northcoders News API
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
+INSTRUCTIONS TO RUN REPO: SET UP ENVIRONMENT VARIABLES:
+
+Need to create '.env.test' Inside the file please put PGDATABASE=nc_news_test
+Also please create '.env.development' and inside put PGDATABASE=nc_news
