@@ -21,6 +21,8 @@ describe("GET /api/topics", () => {
         });
       });
   });
+});
+describe("GET api/nonsense ", () => {
   test("404: should respond with error if api do not exist ", () => {
     return request(app)
       .get("/api/nonsense")
