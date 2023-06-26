@@ -21,4 +21,12 @@ describe("GET /api/topics", () => {
         });
       });
   });
+  test("404: should respond with error if api do not exist ", () => {
+    return request(app)
+      .get("/api/nonsense")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
 });
