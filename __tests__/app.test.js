@@ -79,3 +79,30 @@ describe("GET /api", () => {
       });
   });
 });
+describe("GET /api/articles", () => {
+  test("should return 200 with article array of article objects ", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).not.toHaveLength(0);
+        body.articles.forEach((article) => {
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("article_id", expect.any(Number));
+          expect(article).toHaveProperty("topic", expect.any(String));
+          expect(article).toHaveProperty("comment_count", expect.any(Number));
+          expect(article).toHaveProperty("votes", expect.any(Number));
+          expect(article).toHaveProperty("created_at", expect.any(String));
+        });
+      });
+  });
+  test("should return articles object sorted descending", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+});
