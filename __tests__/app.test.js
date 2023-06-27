@@ -32,6 +32,43 @@ describe("GET api/nonsense ", () => {
       });
   });
 });
+describe("GET /api/articles/:article_id", () => {
+  test("200: should return an article object with given ID", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        const { article } = body;
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
+      });
+  });
+  test("should give a 400 error if not valid id id = nonsense", () => {
+    return request(app)
+      .get("/api/articles/nonsense")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid Request");
+      });
+  });
+  test("should give a 404 error if id is valid but not found", () => {
+    return request(app)
+      .get("/api/articles/9999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+});
 describe("GET /api", () => {
   test("should respond with an object describing all the available endpoints ", () => {
     return request(app)
