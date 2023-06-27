@@ -3,7 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
-
+const data = require("../endpoints.json");
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
@@ -75,13 +75,7 @@ describe("GET /api", () => {
       .get("/api")
       .expect(200)
       .then(({ body }) => {
-        const { getApi } = body;
-        const arrGetApi = Object.values(getApi);
-        arrGetApi.forEach((api) => {
-          expect(api).toHaveProperty("description");
-          expect(api).toHaveProperty("queries");
-          expect(api).toHaveProperty("exampleResponse");
-        });
+        expect(body.getApi).toEqual(data);
       });
   });
 });
