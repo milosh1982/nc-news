@@ -38,3 +38,14 @@ exports.selectArticle = () => {
         });
     });
 };
+
+exports.selectPostComment = (id, username, body) => {
+  return db
+    .query(
+      "INSERT INTO comments (body, votes, author, article_id) VALUES ($1, $2, $3, $4) RETURNING *;",
+      [body, 2, username, id]
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+};
