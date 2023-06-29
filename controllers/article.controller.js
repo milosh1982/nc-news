@@ -3,6 +3,7 @@ const {
   selectArticle,
   selectPostComment,
 } = require("../models/article.model");
+const { checkUsernameExist } = require("../utility-fun/checkIdExist");
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
@@ -29,7 +30,15 @@ exports.postComment = (req, res, next) => {
   const { body } = req.body;
   const { username } = req.body;
   const { article_id } = req.params;
-  selectPostComment(article_id, username, body)
+  const promise = [
+    selectPostComment(article_id, username, body),
+    checkUsernameExist(username),
+  ];
+
+  Promise.all(promise)
+    .then((values) => {
+      return values[0];
+    })
     .then((comment) => {
       res.status(201).send({ comment });
     })

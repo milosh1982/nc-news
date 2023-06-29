@@ -131,6 +131,34 @@ describe("POST /api/articles/:article_id/comments", () => {
         );
       });
   });
+  test("should return 201 and respond with added comment and ignore unnecessary properties", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "rogersop",
+        body: "I love this article very much!!",
+        unnecessary: "I am here unnecessary",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toHaveLength(1);
+        expect(body.comment[0]).toHaveProperty(
+          "comment_id",
+          expect.any(Number)
+        );
+        expect(body.comment[0]).toHaveProperty("body", expect.any(String));
+        expect(body.comment[0]).toHaveProperty("votes", expect.any(Number));
+        expect(body.comment[0]).toHaveProperty("author", expect.any(String));
+        expect(body.comment[0]).toHaveProperty(
+          "article_id",
+          expect.any(Number)
+        );
+        expect(body.comment[0]).toHaveProperty(
+          "created_at",
+          expect.any(String)
+        );
+      });
+  });
   test("should give a 400 error if not valid id id = nonsense", () => {
     return request(app)
       .post("/api/articles/nonsense/comments")
@@ -144,6 +172,24 @@ describe("POST /api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/9999/comments")
       .send({ username: "rogersop", body: "I love this article very much!!" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  test("should give a 400 error if missing fields, no username or body properties", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: "rogersop", body: "" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid Request");
+      });
+  });
+  test("should give a 404 error if username not found", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: "konradek", body: "I love this article very much!!" })
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not found");
