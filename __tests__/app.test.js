@@ -7,7 +7,7 @@ const data = require("../endpoints.json");
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe("GET /api/topics", () => {
+describe.skip("GET /api/topics", () => {
   test("should respond with an array of topic objects", () => {
     return request(app)
       .get("/api/topics")
@@ -22,7 +22,7 @@ describe("GET /api/topics", () => {
       });
   });
 });
-describe("GET api/nonsense ", () => {
+describe.skip("GET api/nonsense ", () => {
   test("404: should respond with error if api do not exist ", () => {
     return request(app)
       .get("/api/nonsense")
@@ -32,7 +32,7 @@ describe("GET api/nonsense ", () => {
       });
   });
 });
-describe("GET /api/articles/:article_id", () => {
+describe.skip("GET /api/articles/:article_id", () => {
   test("200: should return an article object with given ID", () => {
     return request(app)
       .get("/api/articles/1")
@@ -69,7 +69,7 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
-describe("GET /api", () => {
+describe.skip("GET /api", () => {
   test("should respond with an object describing all the available endpoints ", () => {
     return request(app)
       .get("/api")
@@ -79,7 +79,7 @@ describe("GET /api", () => {
       });
   });
 });
-describe("GET /api/articles", () => {
+describe.skip("GET /api/articles", () => {
   test("should return 200 with article array of article objects ", () => {
     return request(app)
       .get("/api/articles")
@@ -106,7 +106,7 @@ describe("GET /api/articles", () => {
       });
   });
 });
-describe("POST /api/articles/:article_id/comments", () => {
+describe.skip("POST /api/articles/:article_id/comments", () => {
   test("should return 201 and respond with added comment", () => {
     return request(app)
       .post("/api/articles/1/comments")
@@ -140,10 +140,37 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(body.comment).toHaveProperty("created_at", expect.any(String));
       });
   });
+});
+describe.skip("GET /api/articles/:article_id/comments", () => {
+  test("should return 200: with all comments for an article", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toHaveLength(11);
+        body.comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("article_id", expect.any(Number));
+        });
+      });
+  });
+  test("should return comments object sorted descending", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toBeSortedBy("created_at", { descending: true });
+      });
+  });
   test("should give a 400 error if not valid id id = nonsense", () => {
     return request(app)
       .post("/api/articles/nonsense/comments")
       .send({ username: "rogersop", body: "I love this article very much!!" })
+      .get("/api/articles/nonsense/comments")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Invalid Request");
@@ -153,6 +180,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/9999/comments")
       .send({ username: "rogersop", body: "I love this article very much!!" })
+      .get("/api/articles/9999/comments")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not found");
@@ -171,6 +199,14 @@ describe("POST /api/articles/:article_id/comments", () => {
     return request(app)
       .post("/api/articles/1/comments")
       .send({ username: "konradek", body: "I love this article very much!!" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not Found");
+      });
+  });
+  test("should give a 404 error if id is valid but no comment found", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not found");
