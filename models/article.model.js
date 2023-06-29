@@ -39,6 +39,19 @@ exports.selectArticle = () => {
     });
 };
 
+exports.selectPostComment = (id, username, body) => {
+  if (!username || !body) {
+    return Promise.reject({ status: 400, msg: "Invalid Request" });
+  }
+  return db
+    .query(
+      "INSERT INTO comments (body, votes, author, article_id) VALUES ($1, $2, $3, $4) RETURNING *;",
+      [body, 2, username, id]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
 exports.selectComments = (id) => {
   return db
     .query(

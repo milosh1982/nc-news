@@ -5,6 +5,7 @@ const { getApi } = require("./controllers/api.controller");
 const {
   getArticleById,
   getArticle,
+  postComment,
   getComments,
 } = require("./controllers/article.controller");
 const app = express();
@@ -14,13 +15,19 @@ app.get("/api", getApi);
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getArticle);
-app.get("/api/articles/:article_id/comments", getComments);
+app.post("/api/articles/:article_id/comments", postComment);
+//app.get("/api/articles/:article_id/comments", getComments);
 
 app.all("*", getAll);
 
 app.use((err, req, res, next) => {
   if (err.code === "22P02") {
     res.status(400).send({ msg: "Invalid Request" });
+  } else next(err);
+});
+app.use((err, req, res, next) => {
+  if (err.code === "23503") {
+    res.status(404).send({ msg: "Not found" });
   } else next(err);
 });
 app.use((err, req, res, next) => {
