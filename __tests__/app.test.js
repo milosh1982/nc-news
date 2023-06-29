@@ -112,7 +112,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
-        expect(body.comments).not.toHaveLength(0);
+        expect(body.comments).toHaveLength(11);
         body.comments.forEach((comment) => {
           expect(comment).toHaveProperty("comment_id", expect.any(Number));
           expect(comment).toHaveProperty("votes", expect.any(Number));
@@ -142,6 +142,14 @@ describe("GET /api/articles/:article_id/comments", () => {
   test("should give a 404 error if id is valid but not found", () => {
     return request(app)
       .get("/api/articles/9999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+  test("should give a 404 error if id is valid but no comment found", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Not found");
