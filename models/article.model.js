@@ -49,6 +49,6 @@ exports.selectPostComment = (id, username, body) => {
       [body, 2, username, id]
     )
     .then(({ rows }) => {
-      return rows;
+      return rows[0];
     });
 };

@@ -113,22 +113,13 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send({ username: "rogersop", body: "I love this article very much!!" })
       .expect(201)
       .then(({ body }) => {
-        expect(body.comment).toHaveLength(1);
-        expect(body.comment[0]).toHaveProperty(
-          "comment_id",
-          expect.any(Number)
-        );
-        expect(body.comment[0]).toHaveProperty("body", expect.any(String));
-        expect(body.comment[0]).toHaveProperty("votes", expect.any(Number));
-        expect(body.comment[0]).toHaveProperty("author", expect.any(String));
-        expect(body.comment[0]).toHaveProperty(
-          "article_id",
-          expect.any(Number)
-        );
-        expect(body.comment[0]).toHaveProperty(
-          "created_at",
-          expect.any(String)
-        );
+        console.log(body.comment);
+        expect(body.comment).toHaveProperty("comment_id", expect.any(Number));
+        expect(body.comment).toHaveProperty("body", expect.any(String));
+        expect(body.comment).toHaveProperty("votes", expect.any(Number));
+        expect(body.comment).toHaveProperty("author", expect.any(String));
+        expect(body.comment).toHaveProperty("article_id", expect.any(Number));
+        expect(body.comment).toHaveProperty("created_at", expect.any(String));
       });
   });
   test("should return 201 and respond with added comment and ignore unnecessary properties", () => {
@@ -141,22 +132,12 @@ describe("POST /api/articles/:article_id/comments", () => {
       })
       .expect(201)
       .then(({ body }) => {
-        expect(body.comment).toHaveLength(1);
-        expect(body.comment[0]).toHaveProperty(
-          "comment_id",
-          expect.any(Number)
-        );
-        expect(body.comment[0]).toHaveProperty("body", expect.any(String));
-        expect(body.comment[0]).toHaveProperty("votes", expect.any(Number));
-        expect(body.comment[0]).toHaveProperty("author", expect.any(String));
-        expect(body.comment[0]).toHaveProperty(
-          "article_id",
-          expect.any(Number)
-        );
-        expect(body.comment[0]).toHaveProperty(
-          "created_at",
-          expect.any(String)
-        );
+        expect(body.comment).toHaveProperty("comment_id", expect.any(Number));
+        expect(body.comment).toHaveProperty("body", expect.any(String));
+        expect(body.comment).toHaveProperty("votes", expect.any(Number));
+        expect(body.comment).toHaveProperty("author", expect.any(String));
+        expect(body.comment).toHaveProperty("article_id", expect.any(Number));
+        expect(body.comment).toHaveProperty("created_at", expect.any(String));
       });
   });
   test("should give a 400 error if not valid id id = nonsense", () => {
