@@ -65,3 +65,20 @@ exports.selectComments = (id) => {
       return rows;
     });
 };
+
+exports.selectPatchVotesArticle = (id, patch) => {
+  if (!patch || !patch.inc_votes) {
+    return Promise.reject({ status: 400, msg: "Invalid Request" });
+  }
+  return db
+    .query(
+      `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`,
+      [patch.inc_votes, id]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Not found" });
+      }
+      return rows[0];
+    });
+};

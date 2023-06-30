@@ -3,6 +3,7 @@ const {
   selectArticle,
   selectPostComment,
   selectComments,
+  selectPatchVotesArticle,
 } = require("../models/article.model");
 const { checkUsernameExist } = require("../utility-fun/checkIdExist");
 
@@ -53,6 +54,18 @@ exports.getComments = (req, res, next) => {
   selectComments(article_id)
     .then((comments) => {
       res.status(200).send({ comments });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.patchVotesArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  const body = req.body;
+  selectPatchVotesArticle(article_id, body)
+    .then((updated_article) => {
+      res.status(201).send({ updated_article });
     })
     .catch((err) => {
       next(err);

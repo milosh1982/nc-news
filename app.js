@@ -7,6 +7,7 @@ const {
   getArticle,
   postComment,
   getComments,
+  patchVotesArticle,
 } = require("./controllers/article.controller");
 const app = express();
 app.use(express.json());
@@ -17,6 +18,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/articles", getArticle);
 app.post("/api/articles/:article_id/comments", postComment);
 app.get("/api/articles/:article_id/comments", getComments);
+app.patch("/api/articles/:article_id", patchVotesArticle);
 
 app.all("*", getAll);
 
