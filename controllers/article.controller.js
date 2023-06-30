@@ -76,8 +76,8 @@ exports.patchVotesArticle = (req, res, next) => {
 exports.deleteComment = (req, res, next) => {
   const { comment_id } = req.params;
   selectDeleteComment(comment_id)
-    .then((deleted) => {
-      res.status(204).send({ deleted });
+    .then(() => {
+      res.status(204).send();
     })
     .catch((err) => {
       next(err);

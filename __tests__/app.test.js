@@ -278,12 +278,7 @@ describe("PATCH /api/articles/:article_id", () => {
 });
 describe("DELETE /api/comments/:comment_id", () => {
   test("should delete comment by comment id", () => {
-    return request(app)
-      .delete("/api/comments/5")
-      .expect(204)
-      .then(({ res }) => {
-        expect(res.statusMessage).toBe("No Content");
-      });
+    return request(app).delete("/api/comments/5").expect(204);
   });
   test("should give a 400 error if not valid id id = nonsense", () => {
     return request(app)
