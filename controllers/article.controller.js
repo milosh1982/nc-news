@@ -5,6 +5,7 @@ const {
   selectComments,
   selectPatchVotesArticle,
   selectDeleteComment,
+  selectGetUsers,
 } = require("../models/article.model");
 const { checkUsernameExist } = require("../utility-fun/checkIdExist");
 
@@ -78,6 +79,16 @@ exports.deleteComment = (req, res, next) => {
   selectDeleteComment(comment_id)
     .then(() => {
       res.status(204).send();
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getUsers = (req, res, next) => {
+  selectGetUsers()
+    .then((users) => {
+      res.status(200).send({ users });
     })
     .catch((err) => {
       next(err);

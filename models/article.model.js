@@ -93,3 +93,11 @@ exports.selectDeleteComment = (id) => {
       return rows[0];
     });
 };
+
+exports.selectGetUsers = () => {
+  return db
+    .query("SELECT username, name, avatar_url FROM users;")
+    .then(({ rows }) => {
+      return rows;
+    });
+};
