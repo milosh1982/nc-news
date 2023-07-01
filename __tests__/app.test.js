@@ -85,7 +85,6 @@ describe("GET /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
-        console.log(body);
         expect(body.articles).not.toHaveLength(0);
         body.articles.forEach((article) => {
           expect(article).toHaveProperty("author", expect.any(String));
@@ -352,6 +351,14 @@ describe("GET /api/articles(queries)", () => {
   test("should return error if bad query value", () => {
     return request(app)
       .get("/api/articles?sort_by=bad")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("should return error if query not exist ", () => {
+    return request(app)
+      .get("/api/articles?order_by=bananas")
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request");

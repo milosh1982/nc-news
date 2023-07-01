@@ -22,9 +22,23 @@ exports.getArticleById = (req, res, next) => {
 
 exports.getArticle = (req, res, next) => {
   const { topic, sort_by, order } = req.query;
-  selectArticle(topic, sort_by, order)
-    .then((articles) => {
-      res.status(200).send({ articles });
+
+  function checkValidQuery() {
+    const validQuery = ["topic", "sort_by", "order"];
+    const queryKeys = Object.keys(req.query);
+    if (queryKeys.length > 0) {
+      const filteredQuery = validQuery.filter((query) =>
+        queryKeys.includes(query)
+      );
+      if (filteredQuery.length === 0) {
+        return Promise.reject({ status: 400, msg: "Bad request" });
+      }
+    }
+  }
+  const promises = [checkValidQuery(), selectArticle(topic, sort_by, order)];
+  Promise.all(promises)
+    .then((values) => {
+      res.status(200).send({ articles: values[1] });
     })
     .catch((err) => {
       next(err);
