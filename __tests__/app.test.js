@@ -346,6 +346,9 @@ describe("GET /api/articles(queries)", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.articles).toBeSortedBy("author", { descending: false });
+        body.articles.forEach((el) => {
+          expect(el.topic).toBe("mitch");
+        });
       });
   });
   test("should return error if bad query value", () => {
@@ -362,6 +365,14 @@ describe("GET /api/articles(queries)", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("should respond 404 when topic do not exist", () => {
+    return request(app)
+      .get("/api/articles?topic=bananas")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
       });
   });
 });

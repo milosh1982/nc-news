@@ -7,7 +7,10 @@ const {
   selectDeleteComment,
   selectGetUsers,
 } = require("../models/article.model");
-const { checkUsernameExist } = require("../utility-fun/checkIdExist");
+const {
+  checkUsernameExist,
+  checkTopicExist,
+} = require("../utility-fun/checkIdExist");
 const checkValidQuery = require("../utility-fun/checkValidQuery");
 
 exports.getArticleById = (req, res, next) => {
