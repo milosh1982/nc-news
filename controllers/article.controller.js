@@ -7,7 +7,11 @@ const {
   selectDeleteComment,
   selectGetUsers,
 } = require("../models/article.model");
-const { checkUsernameExist } = require("../utility-fun/checkIdExist");
+const {
+  checkUsernameExist,
+  checkTopicExist,
+} = require("../utility-fun/checkIdExist");
+const checkValidQuery = require("../utility-fun/checkValidQuery");
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
@@ -21,9 +25,14 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getArticle = (req, res, next) => {
-  selectArticle()
-    .then((articles) => {
-      res.status(200).send({ articles });
+  const { topic, sort_by, order } = req.query;
+  const promises = [
+    checkValidQuery(req.query),
+    selectArticle(topic, sort_by, order),
+  ];
+  Promise.all(promises)
+    .then((values) => {
+      res.status(200).send({ articles: values[1] });
     })
     .catch((err) => {
       next(err);

@@ -11,7 +11,19 @@ exports.selectArticleById = (id) => {
     });
 };
 
-exports.selectArticle = () => {
+exports.selectArticle = (topic, sort_by = "created_at", order = "desc") => {
+  const validSortBy = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "created_at",
+    "votes",
+  ];
+  const validOrder = ["asc", "desc"];
+  if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  }
   return db
     .query(
       "SELECT articles.article_id, COUNT(articles.article_id) FROM articles JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id"
@@ -20,22 +32,34 @@ exports.selectArticle = () => {
       return rows;
     })
     .then((count) => {
-      return db
-        .query(
-          "SELECT author, title, article_id, topic, created_at, votes, article_img_url FROM articles ORDER BY created_at DESC;"
-        )
-        .then((articles) => {
-          const newData = articles.rows.map((article) => {
-            article.comment_count = 0;
-            count.forEach((el) => {
-              if (el.article_id === article.article_id) {
-                article.comment_count = Number(el.count);
-              }
-            });
-            return article;
+      let queryStr = `SELECT author, title, article_id, topic, created_at, votes, article_img_url FROM articles`;
+
+      if (topic) {
+        const validTopic = ["mitch", "cats", "paper"];
+        if (!validTopic.includes(topic)) {
+          return Promise.reject({ status: 404, msg: "Not found" });
+        }
+        queryStr += ` WHERE articles.topic = ` + "'" + topic + "'";
+      }
+      if (sort_by) {
+        queryStr += ` ORDER BY ${sort_by}`;
+      }
+      if (order) {
+        const orderToUpper = order.toUpperCase();
+        queryStr += ` ${orderToUpper}`;
+      }
+      return db.query(queryStr).then((articles) => {
+        const newData = articles.rows.map((article) => {
+          article.comment_count = 0;
+          count.forEach((el) => {
+            if (el.article_id === article.article_id) {
+              article.comment_count = Number(el.count);
+            }
           });
-          return newData;
+          return article;
         });
+        return newData;
+      });
     });
 };
 
