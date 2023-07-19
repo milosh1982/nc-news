@@ -35,7 +35,14 @@ exports.selectArticle = (topic, sort_by = "created_at", order = "desc") => {
       let queryStr = `SELECT author, title, article_id, topic, created_at, votes, article_img_url FROM articles`;
 
       if (topic) {
-        const validTopic = ["mitch", "cats", "paper"];
+        const validTopic = [
+          "mitch",
+          "cats",
+          "paper",
+          "coding",
+          "football",
+          "cooking",
+        ];
         if (!validTopic.includes(topic)) {
           return Promise.reject({ status: 404, msg: "Not found" });
         }
