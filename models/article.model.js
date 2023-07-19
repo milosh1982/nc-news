@@ -19,6 +19,7 @@ exports.selectArticle = (topic, sort_by = "created_at", order = "desc") => {
     "topic",
     "created_at",
     "votes",
+    "comment_count",
   ];
   const validOrder = ["asc", "desc"];
   if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
